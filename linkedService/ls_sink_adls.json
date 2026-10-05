@@ -1,0 +1,10 @@
+{
+	"name": "ls_sink_adls",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://staccaresync.dfs.core.windows.net/"
+		}
+	}
+}
