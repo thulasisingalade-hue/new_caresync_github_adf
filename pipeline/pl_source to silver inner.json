@@ -197,11 +197,50 @@
 					"referenceName": "ds_databricks",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "Script2",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "bronze to silver",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "ls_sql",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "update ctrl.audit_log\nset status='success',end_time=SYSDATETIME(),\nrecords_written=@{activity('bronze to silver').output.runOutPut}\nWHERE adf_run_id=@{pipeline().RunId}and table_id=@{pipeline().parameters.paramtable_id}",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
 			}
 		],
 		"parameters": {
 			"paramtable_id": {
 				"type": "int"
+			},
+			"adf_run_id": {
+				"type": "string"
 			}
 		},
 		"variables": {
