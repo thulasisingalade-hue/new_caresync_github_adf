@@ -55,7 +55,7 @@
 							"type": "ExecutePipeline",
 							"dependsOn": [
 								{
-									"activity": "Script1",
+									"activity": "insert script",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -75,16 +75,12 @@
 									"paramtable_id": {
 										"value": "@item().table_id",
 										"type": "Expression"
-									},
-									"adf_run_id": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
 									}
 								}
 							}
 						},
 						{
-							"name": "Script1",
+							"name": "insert script",
 							"type": "Script",
 							"dependsOn": [],
 							"policy": {
@@ -104,7 +100,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "insert into ctrl.audit_log(adf_run_id,table_id,stage,status,start_time)\nvalues(@{pipeline().RunId},@{item().table_id},'source_to_silver','IN_PROGRESS',sysutcdatetime())",
+											"value": "insert into ctrl.audit_log(adf_run_id,table_id,stage,status,start_time)\nvalues(@{pipeline().parameters.adf_run_id_param},@{item().table_id},'source_to_silver','IN_PROGRESS',sysutcdatetime())",
 											"type": "Expression"
 										}
 									}
@@ -113,7 +109,7 @@
 							}
 						},
 						{
-							"name": "Script2",
+							"name": "executefailscript update",
 							"type": "Script",
 							"dependsOn": [
 								{
@@ -140,7 +136,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "update ctrl.audit_log\nset status='FAILED',end_time=SYSDATETIME()\nWHERE adf_run_id=@{pipeline().RunId}and table_id=@{item().table_id}",
+											"value": "update ctrl.audit_log\nset status='FAILED',end_time=SYSDATETIME()\nWHERE adf_run_id=@{pipeline().parameters.adf_run_id_param}and table_id=@{item().table_id}",
 											"type": "Expression"
 										}
 									}
@@ -154,6 +150,9 @@
 		],
 		"parameters": {
 			"storagesystem": {
+				"type": "string"
+			},
+			"adf_run_id_param": {
 				"type": "string"
 			}
 		},

@@ -238,9 +238,6 @@
 		"parameters": {
 			"paramtable_id": {
 				"type": "int"
-			},
-			"adf_run_id": {
-				"type": "string"
 			}
 		},
 		"variables": {
