@@ -75,6 +75,10 @@
 									"paramtable_id": {
 										"value": "@item().table_id",
 										"type": "Expression"
+									},
+									"adf_run_id": {
+										"value": "@pipeline().parameters.adf_run_id_param",
+										"type": "Expression"
 									}
 								}
 							}
