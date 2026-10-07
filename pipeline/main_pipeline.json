@@ -18,7 +18,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select  table_id,source_table_name from ctrl.table_config where source_system='@{pipeline().parameters.storagesystem}'",
+							"value": "select  * from ctrl.table_config where source_system='@{pipeline().parameters.storagesystem}'",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -104,7 +104,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "insert into ctrl.audit_log(adf_run_id,table_id,stage,status,start_time)\nvalues(@{pipeline().parameters.adf_run_id_param},@{item().table_id},'source_to_silver','IN_PROGRESS',sysutcdatetime())",
+											"value": "insert into ctrl.audit_log(adf_run_id,table_id,stage,status,start_time)\nvalues('@{pipeline().parameters.adf_run_id_param}',@{item().table_id},'source_to_silver','IN_PROGRESS',sysutcdatetime())",
 											"type": "Expression"
 										}
 									}
@@ -140,7 +140,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "update ctrl.audit_log\nset status='FAILED',end_time=SYSDATETIME()\nWHERE adf_run_id=@{pipeline().parameters.adf_run_id_param}and table_id=@{item().table_id}",
+											"value": "update ctrl.audit_log\nset status='FAILED',end_time=SYSDATETIME()\nWHERE adf_run_id='@{pipeline().parameters.adf_run_id_param}'and table_id=@{item().table_id}",
 											"type": "Expression"
 										}
 									}
